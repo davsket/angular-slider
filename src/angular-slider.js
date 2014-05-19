@@ -142,6 +142,7 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
              * @returns {Number}
              */
             function roundToStep(value, precision, step, floor, ceiling) {
+                var stepVal
 
                 // precision is optional
                 if(angular.isUndefined(precision) || !precision) {
@@ -149,8 +150,11 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
                 }
 
                 // step is optional
+                if(angular.isFunction(step)){
+                    stepVal = step(value)
+                }
                 if(angular.isUndefined(step) || !step || step == 0) {
-                    step = 1 / Math.pow(10, precision);
+                    stepVal = 1 / Math.pow(10, precision);
                 }
 
                 // floor is optional
@@ -164,10 +168,10 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
                 }
 
                 // how far from a step is the value
-                var remainder = (value - floor) % step;
+                var remainder = (value - floor) % stepVal;
 
                 // round the value to a step
-                var roundedValue = remainder > (step / 2) ? value + step - remainder : value - remainder;
+                var roundedValue = remainder > (stepVal / 2) ? value + stepVal - remainder : value - remainder;
 
                 // ceiling is optional
                 if(angular.isUndefined(ceiling) || !ceiling) {
@@ -188,7 +192,8 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
 			 * @returns {number}
 			 */
 			function roundTo(value, step) {
-				return Math.floor((value / step) + 0.5) * step;
+                var stepVal = angular.isFunction(step) ? step(value) : step
+				return Math.floor((value / stepVal) + 0.5) * stepVal;
 			}
 
             /**
@@ -219,8 +224,8 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
                 scope: {
                     floor            	: '@',   // the minimum possible value
                     ceiling          	: '@',   // the maximum possible value
-                    step             	: '@',   // how wide is each step, omit or set to 0 for no steps
-					stepWidth			: '@',   // alias of step to avoid collisions
+                    step             	: '=',   // how wide is each step, omit or set to 0 for no steps
+					stepWidth			: '=',   // alias of step to avoid collisions
                     precision        	: '@',   // how many decimal places do we care about
                     buffer           	: '@',   // how close can the two knobs of a dual knob slider get?
                     stickiness      	: '@',   // how sticky should the knobs feel...seriously, how did this get all sticky? gross
@@ -644,7 +649,9 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
                                 angular.forEach(watchables, function(watchable) {
                                     
                                     // parse them to floats
-                                    scope[watchable] = parseFloat(scope[watchable]);
+                                    if( watchable != stepWidth || !angular.isFunction(scope[stepWidth])){
+                                        scope[watchable] = parseFloat(scope[watchable]);
+                                    }
 
                                     if(watchable == refLow || watchable == refHigh) {
                                         // this is the low or high value so bring them back in line with the steps
@@ -666,7 +673,10 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
                                         }
                                     } else if(watchable == stepWidth) {
                                         // make sure the step is valid
-                                        if(!scope[stepWidth] || isNaN(scope[stepWidth])) {
+                                        if(angular.isFunction(scope[stepWidth])){
+                                            console.log('skiiip')
+                                            // let it be a function
+                                        }else if(!scope[stepWidth] || isNaN(scope[stepWidth])) {
                                             scope[stepWidth] = 1 / Math.pow(10, scope.precision);
                                         } else {
                                             scope[stepWidth] = parseFloat(scope[stepWidth].toFixed(scope.precision));
@@ -885,6 +895,7 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
                                  * Update the pointers in the DOM
                                  */
                                 function setPointers() {
+                                    var stepVal = angular.isFunction(scope[stepWidth]) ? scope[stepWidth](scope.ngModel) : step
 
                                     /**
                                      * The base percent for the low knob
@@ -896,13 +907,14 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
                                      * The width in percent of a step above the low value
                                      * @type {number}
                                      */
-                                    var stepWidthPercentAboveLow = percentFromValue(scope[refLow] + scope[stepWidth]) - rawLowPercent;
+                                    // FIXME
+                                    var stepWidthPercentAboveLow = percentFromValue(scope[refLow] + stepVal) - rawLowPercent;
 
                                     /**
                                      * The width in percent of a step below the low value
                                      * @type {number}
                                      */
-                                    var stepWidthPercentBelowLow = rawLowPercent - percentFromValue(scope[refLow] - scope[stepWidth]);
+                                    var stepWidthPercentBelowLow = rawLowPercent - percentFromValue(scope[refLow] - stepVal);
 
                                     /**
                                      * The width in percent of the buffer above the low value
@@ -940,13 +952,13 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
                                          * The width in percent of a step above the high value
                                          * @type {number}
                                          */
-                                        var stepWidthPercentAboveHigh = percentFromValue(scope[refHigh] + scope[stepWidth]) - rawHighPercent;
+                                        var stepWidthPercentAboveHigh = percentFromValue(scope[refHigh] + stepVal) - rawHighPercent;
 
                                         /**
                                          * The width in percent of a step below the high value
                                          * @type {number}
                                          */
-                                        var stepWidthPercentBelowHigh = rawHighPercent - percentFromValue(scope[refHigh] - scope[stepWidth]);
+                                        var stepWidthPercentBelowHigh = rawHighPercent - percentFromValue(scope[refHigh] - stepVal);
 
                                         /**
                                          * The width in percent of the buffer below the high value

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Slider for AngularJS</title>
+    <!--<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootswatch/2.3.1/spruce/bootstrap.min.css">-->
+    <style>
+
+	slider {
+		display:     block;
+		position:    relative;
+		height:      30px;
+		width:       500px;
+	}
+
+	slider span.bar {
+		height:     50%;
+		z-index:    0;
+		background: #eee;
+		left:       0;
+		top:        25%;
+		cursor:     pointer;
+	}
+
+	slider span.bar.selection, slider span.bar.unselected {
+	}
+
+	slider span.bar.selection {
+		background: #0a0;
+		opacity:    0.5;
+	}
+
+	slider span.bar.unselected {
+		width:      auto;
+		background: #a00;
+		opacity:    0.5;
+	}
+
+	slider span.pointer {
+		cursor:           pointer;
+		width:            15px;
+		top:              0;
+		bottom:           0;
+		background-color: #00a;
+	}
+
+	slider span.pointer:hover {
+	}
+
+	slider span.pointer.active {
+	}
+
+	slider span.bubble {
+		font-size:   0.7em;
+		line-height: 1.4em;
+		font-family: sans-serif;
+		text-align:  center;
+		text-shadow: none;
+		top:         -1.3em;
+		cursor:      pointer;
+	}
+
+	slider span.bubble.selection, slider span.bubble.limit {
+		top: 25%;
+	}
+
+	slider span.bubble.selection {
+	}
+
+	slider span.bubble.limit {
+	}
+
+	slider span.bubble.low, slider span.bubble.high {
+	}
+	
+	::-ms-tooltip {
+		display: none;
+	}
+
+	#slider-container {
+		-webkit-touch-callout: none;
+		-webkit-user-select:   none;
+		-khtml-user-select:    none;
+		-moz-user-select:      -moz-none;
+		-ms-user-select:       none;
+		user-select:           none;
+	}
+
+    </style>
+</head>
+<body id='ng-app' ng-app="ExampleApp">
+
+	<div id='slider-container' ng-controller="MainCtrl">
+		<h2>Normal</h2>
+		<h3>Single Knob</h3>
+	    <slider floor='{{ floor }}' ceiling='{{ ceiling }}' step='step' ng-model='value'></slider>
+		Value: <input ng-model="value" type="text" />
+    </div>
+	<script type="text/javascript" src="lib/jquery-2.0.3.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-touch.min.js"></script>
+    <script src="src/rangeInputSupported.js"></script>
+    <script src="src/angular-slider.js"></script>
+    <script>
+	    angular.module('ExampleApp', ['vr.directives.slider']).controller('MainCtrl', ['$scope', function($scope) {
+		    $scope.value = 60
+		    $scope.floor = 10
+		    $scope.ceiling = 100
+		    $scope.step = function( val ){ 
+		    	if( !isNaN(val) ){
+		    		if( val <= 20 ){
+		    			return 1
+		    		}if( val <= 50 ){
+		    			return 2
+		    		}if( val <= 80 ){
+		    			return 5
+		    		}
+		    		return 10
+		    	}
+
+				return 1 
+		    }
+		}])
+    </script>
+</body>
+</html>
