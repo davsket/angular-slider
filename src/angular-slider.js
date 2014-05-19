@@ -895,7 +895,7 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
                                  * Update the pointers in the DOM
                                  */
                                 function setPointers() {
-                                    var stepVal = angular.isFunction(scope[stepWidth]) ? scope[stepWidth](scope.ngModel) : step
+                                    var stepVal = angular.isFunction(scope[stepWidth]) ? scope[stepWidth](scope.ngModel) : scope[stepWidth]
 
                                     /**
                                      * The base percent for the low knob
