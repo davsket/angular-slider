@@ -1489,6 +1489,9 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
                                                     onEnd(ev);
                                                 }
                                             });
+                                            $(elem).on('mouseleave', function( ev ){
+                                                onEnd( ev )
+                                            })
                                         }
 
                                         // bind the events to the low value range input
@@ -1551,6 +1554,9 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
                                                     onEnd(ev);
                                                 }
                                             });
+                                            $(elem).on('mouseleave', function( ev ){
+                                                onEnd( ev )
+                                            })
                                         }
 
                                         // bind the common events to the various common elements
