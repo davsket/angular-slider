@@ -1707,9 +1707,9 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
                                                     onEnd(ev);
                                                 }
                                             });
-                                            $(elem).parents('.slider').parent().parent().on('mouseleave', function( ev ){
-                                                onEnd( ev )
-                                            })
+                                            // $(elem).parents('.slider').parent().parent().on('mouseleave', function( ev ){
+                                            //     onEnd( ev )
+                                            // })
                                         }
 
                                         // bind the events to the low value range input
@@ -1772,9 +1772,9 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
                                                     onEnd(ev);
                                                 }
                                             });
-                                            $(elem).parents('.slider').parent().parent().on('mouseleave', function( ev ){
-                                                onEnd( ev )
-                                            })
+                                            // $(elem).parents('.slider').parent().parent().on('mouseleave', function( ev ){
+                                            //     onEnd( ev )
+                                            // })
                                         }
 
                                         // bind the common events to the various common elements
