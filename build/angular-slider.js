@@ -984,10 +984,10 @@ angular.module('vr.directives.slider', ['ngTouch']).directive('slider',
                                 offset(refs.ceilBub, pixelize(barWidth - width(refs.ceilBub)));
 
 
-                                $(document).on('mouseleave', function( ev ){
+                                $('.sliders-control').on('mouseleave', function( ev ){
                                     onEnd( ev )
                                 })
-                                            
+
                                 /**
                                  * Get the offset percentage from the given absolute offset
                                  * @param {number} offset
